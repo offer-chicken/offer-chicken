@@ -46,11 +46,11 @@ document.addEventListener("DOMContentLoaded", function () {
         message.style.color = "#555";
 
         try {
-            if (!window.supabase || !window.supabase.auth) {
+            if (!supabaseClient || !supabaseClient.auth) {
                 throw new Error("Supabase client failed to initialize.");
             }
 
-            const { data, error } = await window.supabase.auth.signInWithPassword({
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email,
                 password
             });
