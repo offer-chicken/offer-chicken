@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>OFFER CHICKEN - Owner Dashboard</title>
+
+    <link rel="stylesheet" href="/admin.css">
+
+</head>
+
+<body>
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="admin-logo">
+
+            <div class="admin-logo-icon">
+                🍖
+            </div>
+
+            <div>
+
+                <h2>OFFER CHICKEN</h2>
+
+                <p>OWNER PANEL</p>
+
+            </div>
+
+        </div>
+
+
+        <nav class="admin-navigation">
+
+            <a href="#" class="active">
+                📊 Dashboard
+            </a>
+
+            <a href="#orders">
+                🛒 Orders
+            </a>
+
+            <a href="#products">
+                🍗 Products
+            </a>
+
+            <a href="#customers">
+                👥 Customers
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <span>
+                Owner / Admin
+            </span>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="admin-main">
+
+
+        <!-- =========================
+             HEADER
+        ========================== -->
+
+        <header class="admin-header">
+
+            <div>
+
+                <h1>
+                    Owner Dashboard
+                </h1>
+
+                <p>
+                    Manage your meat delivery business
+                </p>
+
+            </div>
+
+
+            <div class="admin-user">
+
+                <div class="admin-avatar">
+                    👤
+                </div>
+
+                <div>
+
+                    <strong>
+                        Owner
+                    </strong>
+
+                    <span>
+                        Admin
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =========================
+             DASHBOARD STATS
+        ========================== -->
+
+        <section class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon orders-icon">
+                    🛒
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Orders
+                    </span>
+
+                    <strong id="total-orders">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon revenue-icon">
+                    ₹
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Revenue
+                    </span>
+
+                    <strong id="total-revenue">
+                        ₹0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon pending-icon">
+                    ⏳
+                </div>
+
+                <div>
+
+                    <span>
+                        Pending Orders
+                    </span>
+
+                    <strong id="pending-orders">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon customer-icon">
+                    👥
+                </div>
+
+                <div>
+
+                    <span>
+                        Customers
+                    </span>
+
+                    <strong id="total-customers">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             ORDERS
+        ========================== -->
+
+        <section
+            class="dashboard-section"
+            id="orders"
+        >
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Recent Orders
+                    </h2>
+
+                    <p>
+                        View and manage customer orders
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="refresh-orders"
+                    class="refresh-button"
+                    type="button"
+                >
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Order ID
+                            </th>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Phone
+                            </th>
+
+                            <th>
+                                Ordered Items
+                            </th>
+
+                            <!-- NEW -->
+                            <th>
+                                Order Time
+                            </th>
+
+                            <th>
+                                Total
+                            </th>
+
+                            <th>
+                                Payment
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="orders-table-body">
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                class="loading-cell"
+                            >
+                                Loading orders...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             PRODUCTS
+        ========================== -->
+
+        <section
+            class="dashboard-section"
+            id="products"
+        >
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Products
+                    </h2>
+
+                    <p>
+                        Products available in your store
+                    </p>
+
+                </div>
+
+
+                <div
+                    style="
+                        display:flex;
+                        gap:10px;
+                        align-items:center;
+                    "
+                >
+
+                    <button
+                        id="add-product-button"
+                        class="refresh-button"
+                        type="button"
+                    >
+                        ＋ Add Product
+                    </button>
+
+
+                    <button
+                        id="refresh-products"
+                        class="refresh-button"
+                        type="button"
+                    >
+                        ↻ Refresh
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <div
+                id="products-list"
+                class="info-card-grid"
+            >
+
+                <div class="loading-cell">
+                    Loading products...
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             CUSTOMERS
+        ========================== -->
+
+        <section
+            class="dashboard-section"
+            id="customers"
+        >
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Customer Information
+                    </h2>
+
+                    <p>
+                        Customer details from recent orders
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="customer-list">
+
+                <div class="empty-message">
+                    Customer information will appear here.
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =========================
+         ADD / EDIT PRODUCT MODAL
+    ========================== -->
+
+    <div
+        id="product-modal"
+        style="
+            display:none;
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,0.55);
+            z-index:9999;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+        "
+    >
+
+        <div
+            style="
+                background:white;
+                width:100%;
+                max-width:520px;
+                border-radius:16px;
+                padding:25px;
+                box-shadow:0 20px 60px rgba(0,0,0,0.25);
+            "
+        >
+
+            <div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    margin-bottom:20px;
+                "
+            >
+
+                <h2
+                    id="product-modal-title"
+                    style="margin:0;"
+                >
+                    Add Product
+                </h2>
+
+
+                <button
+                    id="close-product-modal"
+                    type="button"
+                    style="
+                        border:none;
+                        background:#f1f1f1;
+                        width:36px;
+                        height:36px;
+                        border-radius:50%;
+                        font-size:20px;
+                        cursor:pointer;
+                    "
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <form id="product-form">
+
+
+                <!-- PRODUCT NAME -->
+
+                <div style="margin-bottom:15px;">
+
+                    <label
+                        for="product-name"
+                        style="
+                            display:block;
+                            font-weight:600;
+                            margin-bottom:6px;
+                        "
+                    >
+                        Product Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="product-name"
+                        placeholder="Example: Chicken Breast"
+                        required
+                        style="
+                            width:100%;
+                            padding:11px;
+                            border:1px solid #ddd;
+                            border-radius:8px;
+                            box-sizing:border-box;
+                        "
+                    >
+
+                </div>
+
+
+
+                <!-- CATEGORY -->
+
+                <div style="margin-bottom:15px;">
+
+                    <label
+                        for="product-category"
+                        style="
+                            display:block;
+                            font-weight:600;
+                            margin-bottom:6px;
+                        "
+                    >
+                        Category
+                    </label>
+
+                    <select
+                        id="product-category"
+                        required
+                        style="
+                            width:100%;
+                            padding:11px;
+                            border:1px solid #ddd;
+                            border-radius:8px;
+                            box-sizing:border-box;
+                        "
+                    >
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+                        <option value="chicken">
+                            Chicken
+                        </option>
+
+                        <option value="mutton">
+                            Mutton
+                        </option>
+
+                        <option value="eggs">
+                            Eggs
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- PRICE -->
+
+                <div style="margin-bottom:15px;">
+
+                    <label
+                        for="product-price"
+                        style="
+                            display:block;
+                            font-weight:600;
+                            margin-bottom:6px;
+                        "
+                    >
+                        Price
+                    </label>
+
+                    <input
+                        type="number"
+                        id="product-price"
+                        min="0"
+                        step="1"
+                        placeholder="Example: 320"
+                        required
+                        style="
+                            width:100%;
+                            padding:11px;
+                            border:1px solid #ddd;
+                            border-radius:8px;
+                            box-sizing:border-box;
+                        "
+                    >
+
+                </div>
+
+
+
+                <!-- IMAGE -->
+
+                <div style="margin-bottom:15px;">
+
+                    <label
+                        for="product-image"
+                        style="
+                            display:block;
+                            font-weight:600;
+                            margin-bottom:6px;
+                        "
+                    >
+                        Image Path
+                    </label>
+
+                    <input
+                        type="text"
+                        id="product-image"
+                        placeholder="Example: images/chicken-breast.jpg"
+                        style="
+                            width:100%;
+                            padding:11px;
+                            border:1px solid #ddd;
+                            border-radius:8px;
+                            box-sizing:border-box;
+                        "
+                    >
+
+                </div>
+
+
+
+                <!-- DESCRIPTION -->
+
+                <div style="margin-bottom:15px;">
+
+                    <label
+                        for="product-description"
+                        style="
+                            display:block;
+                            font-weight:600;
+                            margin-bottom:6px;
+                        "
+                    >
+                        Description
+                    </label>
+
+                    <textarea
+                        id="product-description"
+                        rows="3"
+                        placeholder="Product description"
+                        style="
+                            width:100%;
+                            padding:11px;
+                            border:1px solid #ddd;
+                            border-radius:8px;
+                            box-sizing:border-box;
+                            resize:vertical;
+                        "
+                    ></textarea>
+
+                </div>
+
+
+
+                <!-- AVAILABLE -->
+
+                <div style="margin-bottom:20px;">
+
+                    <label
+                        style="
+                            display:flex;
+                            align-items:center;
+                            gap:8px;
+                            cursor:pointer;
+                        "
+                    >
+
+                        <input
+                            type="checkbox"
+                            id="product-available"
+                            checked
+                        >
+
+                        <span>
+                            Product is available
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div
+                    style="
+                        display:flex;
+                        gap:10px;
+                        justify-content:flex-end;
+                    "
+                >
+
+                    <button
+                        type="button"
+                        id="cancel-product-button"
+                        style="
+                            padding:11px 20px;
+                            border:1px solid #ddd;
+                            background:#f5f5f5;
+                            border-radius:8px;
+                            cursor:pointer;
+                        "
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        id="save-product-button"
+                        style="
+                            padding:11px 20px;
+                            border:none;
+                            background:#d71920;
+                            color:white;
+                            border-radius:8px;
+                            cursor:pointer;
+                            font-weight:600;
+                        "
+                    >
+                        Save Product
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         SUPABASE LIBRARY
+    ========================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+
+    <!-- =========================
+         ADMIN JAVASCRIPT
+    ========================== -->
+
+    <script src="/config.js"></script>
+
+    <script src="/admin.js"></script>
+
+
+
+    <!-- =====================================================
+         ORDER DETAILS + ORDER TIME
+    ====================================================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                /*
+                 * Wait for admin.js to load the orders.
+                 */
+                setTimeout(
+                    loadOrderDetails,
+                    800
+                );
+
+            }
+        );
+
+
+        async function loadOrderDetails() {
+
+            try {
+
+                const response =
+                    await fetch("/api/orders");
+
+
+                if (!response.ok) {
+
+                    console.error(
+                        "Unable to fetch orders."
+                    );
+
+                    return;
+
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                /*
+                 * Support both:
+                 *
+                 * { orders: [...] }
+                 *
+                 * and
+                 *
+                 * [...]
+                 */
+
+                let orders = [];
+
+                if (Array.isArray(result)) {
+
+                    orders = result;
+
+                } else if (
+                    Array.isArray(result.orders)
+                ) {
+
+                    orders = result.orders;
+
+                } else if (
+                    Array.isArray(result.data)
+                ) {
+
+                    orders = result.data;
+
+                }
+
+
+                if (!orders.length) {
+
+                    return;
+
+                }
+
+
+                const tableBody =
+                    document.getElementById(
+                        "orders-table-body"
+                    );
+
+
+                if (!tableBody) {
+
+                    return;
+
+                }
+
+
+                /*
+                 * Add Order Time header
+                 * only if it doesn't already exist.
+                 */
+
+                const table =
+                    tableBody.closest("table");
+
+
+                if (!table) {
+
+                    return;
+
+                }
+
+
+                const headerRow =
+                    table.querySelector("thead tr");
+
+
+                if (headerRow) {
+
+                    const existingHeaders =
+                        Array.from(
+                            headerRow.children
+                        );
+
+
+                    const hasTimeHeader =
+                        existingHeaders.some(
+                            function (header) {
+
+                                return header
+                                    .textContent
+                                    .trim()
+                                    .toLowerCase()
+                                    .includes(
+                                        "order time"
+                                    );
+
+                            }
+                        );
+
+
+                    if (!hasTimeHeader) {
+
+                        const timeHeader =
+                            document.createElement(
+                                "th"
+                            );
+
+                        timeHeader.textContent =
+                            "Order Time";
+
+
+                        /*
+                         * Put Order Time before Total.
+                         */
+
+                        const totalHeader =
+                            existingHeaders.find(
+                                function (header) {
+
+                                    return header
+                                        .textContent
+                                        .trim()
+                                        .toLowerCase()
+                                        === "total";
+
+                                }
+                            );
+
+
+                        if (totalHeader) {
+
+                            headerRow.insertBefore(
+                                timeHeader,
+                                totalHeader
+                            );
+
+                        } else {
+
+                            headerRow.appendChild(
+                                timeHeader
+                            );
+
+                        }
+
+                    }
+
+                }
+
+
+
+                /*
+                 * Update every order row.
+                 */
+
+                const rows =
+                    Array.from(
+                        tableBody.querySelectorAll(
+                            "tr"
+                        )
+                    );
+
+
+                rows.forEach(
+                    function (row) {
+
+                        const cells =
+                            Array.from(
+                                row.children
+                            );
+
+
+                        if (
+                            cells.length === 0 ||
+                            cells.length < 4
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        /*
+                         * Order ID is the first cell.
+                         */
+
+                        const displayedOrderId =
+                            cells[0]
+                                .textContent
+                                .trim();
+
+
+                        if (!displayedOrderId) {
+
+                            return;
+
+                        }
+
+
+                        /*
+                         * Find matching backend order.
+                         */
+
+                        const order =
+                            orders.find(
+                                function (item) {
+
+                                    const id =
+                                        item.orderId ||
+                                        item.orderNumber ||
+                                        item.id ||
+                                        "";
+
+                                    return String(id)
+                                        .trim()
+                                        === displayedOrderId;
+
+                                }
+                            );
+
+
+                        if (!order) {
+
+                            return;
+
+                        }
+
+
+
+                        /* =================================================
+                           ORDERED ITEMS
+                        ================================================= */
+
+                        const itemsCell =
+                            cells[3];
+
+
+                        if (
+                            itemsCell &&
+                            Array.isArray(order.items)
+                        ) {
+
+                            if (
+                                order.items.length > 0
+                            ) {
+
+                                itemsCell.innerHTML =
+                                    "";
+
+
+                                order.items.forEach(
+                                    function (item) {
+
+                                        const itemDiv =
+                                            document.createElement(
+                                                "div"
+                                            );
+
+
+                                        itemDiv.style.marginBottom =
+                                            "5px";
+
+
+                                        itemDiv.style.fontSize =
+                                            "13px";
+
+
+                                        const name =
+                                            item.name ||
+                                            "Unknown Item";
+
+
+                                        const quantity =
+                                            Number(
+                                                item.quantity ||
+                                                1
+                                            );
+
+
+                                        const weight =
+                                            item.weight
+                                                ? " (" +
+                                                  item.weight +
+                                                  ")"
+                                                : "";
+
+
+                                        itemDiv.textContent =
+                                            "🍗 " +
+                                            name +
+                                            weight +
+                                            " × " +
+                                            quantity;
+
+
+                                        itemsCell.appendChild(
+                                            itemDiv
+                                        );
+
+                                    }
+                                );
+
+                            }
+
+                        }
+
+
+
+                        /* =================================================
+                           ORDER TIME
+                        ================================================= */
+
+                        const dateValue =
+                            order.createdAt ||
+                            order.orderDate ||
+                            order.created_at;
+
+
+                        if (!dateValue) {
+
+                            return;
+
+                        }
+
+
+                        const date =
+                            new Date(
+                                dateValue
+                            );
+
+
+                        if (
+                            isNaN(
+                                date.getTime()
+                            )
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const formattedTime =
+                            date.toLocaleString(
+                                "en-IN",
+                                {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true
+                                }
+                            );
+
+
+                        /*
+                         * Check if this row already
+                         * has an Order Time cell.
+                         */
+
+                        let timeCell =
+                            row.querySelector(
+                                ".order-time-cell"
+                            );
+
+
+                        if (!timeCell) {
+
+                            timeCell =
+                                document.createElement(
+                                    "td"
+                                );
+
+                            timeCell.className =
+                                "order-time-cell";
+
+
+                            /*
+                             * Insert before Total.
+                             *
+                             * Original structure:
+                             *
+                             * ID
+                             * Customer
+                             * Phone
+                             * Items
+                             * Total
+                             * Payment
+                             * Status
+                             * Action
+                             */
+
+                            const totalCell =
+                                cells[4];
+
+
+                            if (totalCell) {
+
+                                row.insertBefore(
+                                    timeCell,
+                                    totalCell
+                                );
+
+                            } else {
+
+                                row.appendChild(
+                                    timeCell
+                                );
+
+                            }
+
+                        }
+
+
+                        timeCell.innerHTML = `
+                            <span
+                                style="
+                                    display:block;
+                                    white-space:nowrap;
+                                    font-size:13px;
+                                "
+                            >
+                                🕐 ${formattedTime}
+                            </span>
+                        `;
+
+                    }
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Order details error:",
+                    error
+                );
+
+            }
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

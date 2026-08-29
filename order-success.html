@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Order Confirmed - Meat Shop</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+
+    <div class="top-bar">
+
+        <div class="top-left">
+
+            <span>⌖</span>
+
+            <span>
+                Delivering to: Madurai, Tamil Nadu
+            </span>
+
+        </div>
+
+
+        <div class="top-right">
+
+            <span>
+                ☎ +91 98765 43210
+            </span>
+
+            <span>
+                ✉ support@meatshop.com
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- HEADER -->
+
+    <header class="main-header">
+
+        <div class="logo-area">
+
+            <div class="logo-icon">
+                🍖
+            </div>
+
+
+            <div class="logo-text">
+
+                <h1>
+                    MEAT SHOP
+                </h1>
+
+                <p>
+                    FRESH & HYGIENIC
+                </p>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ORDER SUCCESS -->
+
+    <main class="success-page">
+
+
+        <div class="success-card">
+
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+
+            <h1>
+                Order Confirmed!
+            </h1>
+
+
+            <p class="success-message">
+                Thank you for your order.
+                Your fresh meat will be prepared
+                and delivered to your doorstep.
+            </p>
+
+
+            <div class="order-number-box">
+
+                <span>
+                    Order Number
+                </span>
+
+                <strong id="success-order-number">
+                    Loading...
+                </strong>
+
+            </div>
+
+
+
+            <div class="success-details">
+
+                <div>
+
+                    <span>
+                        Customer
+                    </span>
+
+                    <strong id="success-customer">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Payment
+                    </span>
+
+                    <strong id="success-payment">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong
+                        id="success-total"
+                        class="success-total"
+                    >
+                        ₹0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="delivery-message">
+
+                🚚
+
+                <div>
+
+                    <strong>
+                        Your order is on its way!
+                    </strong>
+
+                    <p>
+                        We'll prepare your order
+                        with care and deliver it soon.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="success-buttons">
+
+                <button
+                    type="button"
+                    onclick="window.location.href='index.html'"
+                >
+                    🛒 Continue Shopping
+                </button>
+
+                <button
+                    type="button"
+                    class="secondary-button"
+                    onclick="window.print()"
+                >
+                    🖨 Print Order
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 Meat Shop. Fresh & Hygienic.
+        </p>
+
+    </footer>
+
+
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+
+                const order =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "meatShopLastOrder"
+                        )
+                    );
+
+
+                if (!order) {
+
+                    document.getElementById(
+                        "success-order-number"
+                    ).textContent =
+                        "No order found";
+
+                    return;
+
+                }
+
+
+                document.getElementById(
+                    "success-order-number"
+                ).textContent =
+                    order.orderNumber;
+
+
+                document.getElementById(
+                    "success-customer"
+                ).textContent =
+                    order.customer.name;
+
+
+                document.getElementById(
+                    "success-total"
+                ).textContent =
+                    "₹" + order.total;
+
+
+                document.getElementById(
+                    "success-payment"
+                ).textContent =
+                    order.paymentMethod === "cod"
+                        ? "Cash on Delivery"
+                        : "Online Payment";
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>

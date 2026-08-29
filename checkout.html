@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout - OFFER CHICKEN</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+
+    <div class="top-bar">
+
+        <div class="top-left">
+            <span>⌖</span>
+            <span>Delivering to: SUNGUVARCHATHIRAM, Tamil Nadu</span>
+        </div>
+
+        <div class="top-right">
+            <span>☎ +91 7558148537</span>
+            <span>☎ +91 9384997383</span>
+            <span>✉ theofferchicken@gmail.com</span>
+        </div>
+
+    </div>
+
+
+    <!-- HEADER -->
+
+    <header class="main-header">
+
+        <div class="logo-area">
+
+            <div class="logo-icon">
+                🍖
+            </div>
+
+            <div class="logo-text">
+
+                <h1>
+                    OFFER CHICKEN
+                </h1>
+
+                <p>
+                    FRESH & HYGIENIC
+                </p>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- CHECKOUT -->
+
+    <main class="checkout-page">
+
+
+        <div class="checkout-title">
+
+            <div class="heading-line">
+
+                <span></span>
+
+                <strong>
+                    CHECKOUT
+                </strong>
+
+                <span></span>
+
+            </div>
+
+            <h2>
+                Complete Your Order
+            </h2>
+
+            <p>
+                Enter your delivery details and review your order.
+            </p>
+
+        </div>
+
+
+
+        <div class="checkout-container">
+
+
+            <!-- CUSTOMER DETAILS -->
+
+            <section class="checkout-form">
+
+                <h2>
+                    📦 Delivery Details
+                </h2>
+
+
+                <div class="form-group">
+
+                    <label for="customer-name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="customer-name"
+                        placeholder="Enter your full name"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="customer-phone">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="customer-phone"
+                        placeholder="Enter your phone number"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="customer-address">
+                        Delivery Address
+                    </label>
+
+                    <textarea
+                        id="customer-address"
+                        rows="4"
+                        placeholder="House number, street, area..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="customer-city">
+                            City
+                        </label>
+
+                        <input
+                            type="text"
+                            id="customer-city"
+                            value="SUNGUVARCHATHIRAM"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="customer-pincode">
+                            Pincode
+                        </label>
+
+                        <input
+                            type="text"
+                            id="customer-pincode"
+                            placeholder="Enter your 6-digit pincode"
+                            inputmode="numeric"
+                            maxlength="6"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <h2 class="payment-title">
+                    💳 Payment Method
+                </h2>
+
+
+                <div class="payment-options">
+
+                    <label class="payment-option">
+
+                        <input
+                            type="radio"
+                            name="payment"
+                            value="cod"
+                            checked
+                        >
+
+                        <span>
+                            💵 Cash on Delivery
+                        </span>
+
+                    </label>
+
+
+                    <label class="payment-option">
+
+                        <input
+                            type="radio"
+                            name="payment"
+                            value="online"
+                        >
+
+                        <span>
+                            💳 Online Payment
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- ORDER SUMMARY -->
+
+            <aside class="checkout-summary">
+
+                <h2>
+                    🛒 Your Order
+                </h2>
+
+
+                <div id="checkout-items">
+
+                    <!-- Products will appear here -->
+
+                </div>
+
+
+                <div class="summary-line">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <strong id="checkout-subtotal">
+                        ₹0
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-line">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <strong id="checkout-delivery">
+                        ₹0
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="checkout-total">
+                        ₹0
+                    </strong>
+
+                </div>
+
+
+                <button
+                    id="place-order"
+                    type="button"
+                >
+                    Place Order
+                </button>
+
+
+                <p class="secure-text">
+                    🔒 Your order details are handled securely.
+                </p>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 OFFER CHICKEN. Fresh & Hygienic.
+        </p>
+
+    </footer>
+
+
+
+    <script src="config.js"></script>
+    <script src="checkout.js"></script>
+
+</body>
+
+</html>
