@@ -11,169 +11,68 @@ const supabaseClient =
     );
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.getElementById("admin-login-form");
+    const emailInput = document.getElementById("admin-email");
+    const passwordInput = document.getElementById("admin-password");
+    const message = document.getElementById("login-message");
 
-        const loginForm =
-            document.getElementById(
-                "admin-login-form"
-            );
+    if (!loginForm || !emailInput || !passwordInput || !message) {
+        console.error("Admin login form was not found.");
+        return;
+    }
 
-        const emailInput =
-            document.getElementById(
-                "admin-email"
-            );
+    loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-        const passwordInput =
-            document.getElementById(
-                "admin-password"
-            );
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
 
-        const message =
-            document.getElementById(
-                "login-message"
-            );
-
-
-        // Make sure the login form exists
-        if (!loginForm) {
-
-            console.error(
-                "Admin login form was not found."
-            );
-
+        if (!email) {
+            message.textContent = "Please enter your email.";
+            message.style.color = "#c91418";
+            emailInput.focus();
             return;
         }
 
+        if (!password) {
+            message.textContent = "Please enter your password.";
+            message.style.color = "#c91418";
+            passwordInput.focus();
+            return;
+        }
 
-        loginForm.addEventListener(
-            "submit",
-            async function (event) {
+        message.textContent = "Signing in...";
+        message.style.color = "#555";
 
-                event.preventDefault();
-
-
-                const email =
-                    emailInput.value.trim();
-
-                const password =
-                    passwordInput.value;
-
-
-                // Basic validation
-                if (!email) {
-
-                    message.textContent =
-                        "Please enter your email.";
-
-                    message.style.color =
-                        "#c91418";
-
-                    emailInput.focus();
-
-                    return;
-                }
-
-
-                if (!password) {
-
-                    message.textContent =
-                        "Please enter your password.";
-
-                    message.style.color =
-                        "#c91418";
-
-                    passwordInput.focus();
-
-                    return;
-                }
-
-
-                message.textContent =
-                    "Signing in...";
-
-                message.style.color =
-                    "#555";
-
-
-                try {
-
-                    const {
-                        data,
-                        error
-                    } =
-                        await supabaseClient.auth
-                            .signInWithPassword({
-
-                                email: email,
-
-                                password: password
-
-                            });
-
-
-                    // Supabase login error
-                    if (error) {
-
-                        throw error;
-
-                    }
-
-
-                    // Make sure session exists
-                    if (!data || !data.session) {
-
-                        throw new Error(
-                            "Login session was not created."
-                        );
-
-                    }
-
-
-                    console.log(
-                        "Admin login successful."
-                    );
-
-
-                    message.textContent =
-                        "Login successful. Opening dashboard...";
-
-                    message.style.color =
-                        "#198754";
-
-
-                    // Open admin dashboard
-                    setTimeout(
-                        function () {
-
-                            window.location.href =
-                                "/admin/admin.html";
-
-                        },
-                        500
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Login error:",
-                        error
-                    );
-
-
-                    message.textContent =
-                        error.message ||
-                        "Unable to sign in.";
-
-                    message.style.color =
-                        "#c91418";
-
-                }
-
+        try {
+            if (!window.supabase || !window.supabase.auth) {
+                throw new Error("Supabase client failed to initialize.");
             }
-        );
 
-    }
-);
+            const { data, error } = await window.supabase.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (error) {
+                throw error;
+            }
+
+            if (!data || !data.session) {
+                throw new Error("Login session was not created.");
+            }
+
+            message.textContent = "Login successful. Opening dashboard...";
+            message.style.color = "#198754";
+
+            setTimeout(function () {
+                window.location.href = "/admin/dashboard";
+            }, 500);
+        } catch (error) {
+            console.error("Login error:", error);
+            message.textContent = error.message || "Unable to sign in.";
+            message.style.color = "#c91418";
+        }
+    });
+});

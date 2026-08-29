@@ -1,4 +1,21 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+
+    if (!window.supabase || !window.supabase.auth) {
+        window.location.href = "/admin-login";
+        return;
+    }
+
+    try {
+        const { data: { session }, error } = await window.supabase.auth.getSession();
+        if (error || !session) {
+            window.location.href = "/admin-login";
+            return;
+        }
+    } catch (error) {
+        console.error("Admin auth check failed:", error);
+        window.location.href = "/admin-login";
+        return;
+    }
 
     /* =========================================================
        API URLS
