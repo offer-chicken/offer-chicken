@@ -1,20 +1,37 @@
 document.addEventListener("DOMContentLoaded", async function () {
+    const sessionFlag = sessionStorage.getItem("offerChickenAdminAuth") === "true";
 
     if (!window.supabase || !window.supabase.auth) {
-        window.location.href = "/admin-login";
-        return;
+        if (!sessionFlag) {
+            window.location.replace("/admin-login");
+            return;
+        }
     }
 
     try {
         const { data: { session }, error } = await window.supabase.auth.getSession();
-        if (error || !session) {
-            window.location.href = "/admin-login";
+        const isAuthenticated = Boolean(session) || sessionFlag;
+
+        if (error && !sessionFlag) {
+            console.error("Admin auth check failed:", error);
+            window.location.replace("/admin-login");
             return;
+        }
+
+        if (!isAuthenticated) {
+            window.location.replace("/admin-login");
+            return;
+        }
+
+        if (session) {
+            sessionStorage.setItem("offerChickenAdminAuth", "true");
         }
     } catch (error) {
         console.error("Admin auth check failed:", error);
-        window.location.href = "/admin-login";
-        return;
+        if (!sessionFlag) {
+            window.location.replace("/admin-login");
+            return;
+        }
     }
 
     /* =========================================================

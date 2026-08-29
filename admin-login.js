@@ -63,14 +63,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 throw new Error("Login session was not created.");
             }
 
+            sessionStorage.setItem("offerChickenAdminAuth", "true");
             message.textContent = "Login successful. Opening dashboard...";
             message.style.color = "#198754";
 
             setTimeout(function () {
-                window.location.href = "/admin/dashboard";
+                window.location.replace("/admin/dashboard");
             }, 500);
         } catch (error) {
             console.error("Login error:", error);
+            sessionStorage.removeItem("offerChickenAdminAuth");
             message.textContent = error.message || "Unable to sign in.";
             message.style.color = "#c91418";
         }
