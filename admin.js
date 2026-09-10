@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", async function () {
+    if (window.supabaseReady) {
+        await window.supabaseReady;
+    }
+
     const sessionFlag = sessionStorage.getItem("offerChickenAdminAuth") === "true";
 
     if (!window.supabase || !window.supabase.auth) {
@@ -67,6 +71,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         API_BASE
             ? `${API_BASE}/api/products`
             : "/api/products";
+
+    const REPORTS_API_URL =
+        API_BASE
+            ? `${API_BASE}/api/reports/monthly`
+            : "/api/reports/monthly";
+
+    const STOCK_MOVEMENTS_URL =
+        API_BASE
+            ? `${API_BASE}/api/products/stock-movements`
+            : "/api/products/stock-movements";
 
 
     /* =========================================================
@@ -477,8 +491,12 @@ document.addEventListener("DOMContentLoaded", async function () {
                 "Order Placed";
 
 
+            const paymentRaw =
+                String(order.payment_method || "");
+
             const payment =
-                order.payment_method === "cod"
+                paymentRaw === "cod" ||
+                paymentRaw.indexOf("cod") === 0
                     ? "Cash on Delivery"
                     : "Online Payment";
 
@@ -1079,6 +1097,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             renderProducts(products);
 
+            await loadStockBoard(products);
+
 
         } catch (error) {
 
@@ -1252,8 +1272,19 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <span>
                         ${
                             product.available
-                                ? "✅ Available"
-                                : "❌ Unavailable"
+                                ? "Available"
+                                : "Unavailable"
+                        }
+                    </span>
+
+
+                    <span>
+                        Stock:
+                        ${
+                            product.stock === null ||
+                            product.stock === undefined
+                                ? "Not set"
+                                : Number(product.stock)
                         }
                     </span>
 
@@ -2287,6 +2318,393 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
     /* =========================================================
+       STOCK IN / STOCK OUT
+    ========================================================= */
+
+    function stockUnit(product) {
+        return String(product.category || "").toLowerCase() === "eggs"
+            ? "pack"
+            : "kg";
+    }
+
+    async function submitStockMovement(product, type) {
+        const label = type === "in" ? "Stock In" : "Stock Out";
+        const amountText = prompt(
+            label + " quantity for " + product.name + " (" + stockUnit(product) + "):"
+        );
+
+        if (amountText === null) {
+            return;
+        }
+
+        const quantity = Number(amountText);
+
+        if (!Number.isFinite(quantity) || quantity <= 0) {
+            alert("Please enter a valid quantity greater than 0.");
+            return;
+        }
+
+        const note = prompt(
+            "Note for this " + label.toLowerCase() + " (optional):",
+            type === "in" ? "Purchase / received stock" : "Wastage / adjustment"
+        );
+
+        try {
+            const response = await fetch(
+                `${PRODUCTS_API_URL}/${product.id}/stock`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        type: type,
+                        quantity: quantity,
+                        note: note || ""
+                    })
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Unable to update stock");
+            }
+
+            await loadProducts();
+            await loadStockMovements();
+
+        } catch (error) {
+            console.error("STOCK UPDATE ERROR:", error);
+            alert(error.message || "Unable to update stock.");
+        }
+    }
+
+    async function loadStockBoard(productsFromCaller) {
+        const tableBody = document.getElementById("stock-table-body");
+
+        if (!tableBody) {
+            return;
+        }
+
+        let products = productsFromCaller;
+
+        if (!Array.isArray(products)) {
+            try {
+                const response = await fetch(PRODUCTS_API_URL);
+                const result = await response.json();
+                products = Array.isArray(result.products) ? result.products : [];
+            } catch (error) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-cell">
+                            Unable to load stock.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+        }
+
+        if (!products.length) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty-cell">
+                        No products found.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tableBody.innerHTML = "";
+
+        products.forEach(function (product) {
+            const row = document.createElement("tr");
+            const unit = stockUnit(product);
+            const stockValue = product.stock === null || product.stock === undefined
+                ? "0"
+                : String(product.stock);
+
+            row.innerHTML = `
+                <td>
+                    <strong>${escapeHTML(product.name || "Unnamed")}</strong>
+                </td>
+                <td>
+                    ${escapeHTML(product.category || "—")}
+                </td>
+                <td>
+                    <strong>${escapeHTML(stockValue)} ${escapeHTML(unit)}</strong>
+                </td>
+                <td>
+                    <button
+                        type="button"
+                        class="stock-in-button"
+                        data-product-id="${escapeHTML(product.id)}"
+                    >
+                        Stock In
+                    </button>
+                </td>
+                <td>
+                    <button
+                        type="button"
+                        class="stock-out-button"
+                        data-product-id="${escapeHTML(product.id)}"
+                    >
+                        Stock Out
+                    </button>
+                </td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+
+        tableBody.querySelectorAll(".stock-in-button").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const product = products.find(function (item) {
+                    return String(item.id) === String(button.dataset.productId);
+                });
+
+                if (product) {
+                    submitStockMovement(product, "in");
+                }
+            });
+        });
+
+        tableBody.querySelectorAll(".stock-out-button").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const product = products.find(function (item) {
+                    return String(item.id) === String(button.dataset.productId);
+                });
+
+                if (product) {
+                    submitStockMovement(product, "out");
+                }
+            });
+        });
+
+        await loadStockMovements();
+    }
+
+    async function loadStockMovements() {
+        const list = document.getElementById("stock-movement-list");
+
+        if (!list) {
+            return;
+        }
+
+        try {
+            const response = await fetch(STOCK_MOVEMENTS_URL);
+            const result = await response.json();
+            const movements = Array.isArray(result.movements)
+                ? result.movements
+                : [];
+
+            if (!movements.length) {
+                list.innerHTML = `
+                    <div class="empty-message">
+                        No stock movements yet.
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = movements.map(function (movement) {
+                const type = movement.type || movement.movement_type || "";
+                const quantity = movement.quantity || 0;
+                const note = movement.note || "";
+                const created = movement.createdAt || movement.created_at || "";
+                const date = created
+                    ? new Date(created).toLocaleString("en-IN")
+                    : "";
+
+                return `
+                    <div class="stock-movement-item">
+                        <strong>${escapeHTML(String(type).toUpperCase())}</strong>
+                        <span>${escapeHTML(String(quantity))}</span>
+                        <span>${escapeHTML(note)}</span>
+                        <span>${escapeHTML(date)}</span>
+                    </div>
+                `;
+            }).join("");
+
+        } catch (error) {
+            console.error("STOCK MOVEMENTS ERROR:", error);
+            list.innerHTML = `
+                <div class="empty-message">
+                    Unable to load stock movements.
+                </div>
+            `;
+        }
+    }
+
+
+    /* =========================================================
+       MONTHLY REVENUE REPORT
+    ========================================================= */
+
+    function fillReportMonthSelect() {
+        const select = document.getElementById("report-month");
+
+        if (!select || select.options.length) {
+            return;
+        }
+
+        const now = new Date();
+
+        for (let index = 0; index < 12; index += 1) {
+            const date = new Date(now.getFullYear(), now.getMonth() - index, 1);
+            const option = document.createElement("option");
+            option.value = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0");
+            option.textContent = date.toLocaleString("en-IN", {
+                month: "long",
+                year: "numeric"
+            });
+            select.appendChild(option);
+        }
+    }
+
+    async function loadMonthlyReport() {
+        fillReportMonthSelect();
+
+        const select = document.getElementById("report-month");
+        const selectedValue = select ? select.value : "";
+        const parts = selectedValue.split("-");
+        const year = Number(parts[0]) || new Date().getFullYear();
+        const month = Number(parts[1]) || (new Date().getMonth() + 1);
+
+        try {
+            const response = await fetch(
+                `${REPORTS_API_URL}?year=${year}&month=${month}`
+            );
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Unable to load report");
+            }
+
+            const selected = result.selected || {};
+
+            const monthLabel = document.getElementById("report-month-label");
+            const orderCount = document.getElementById("report-order-count");
+            const revenue = document.getElementById("report-revenue");
+            const split = document.getElementById("report-split");
+            const bars = document.getElementById("revenue-bars");
+            const tableBody = document.getElementById("report-orders-body");
+
+            if (monthLabel) {
+                monthLabel.textContent = selected.label || "—";
+            }
+
+            if (orderCount) {
+                orderCount.textContent = selected.orderCount || 0;
+            }
+
+            if (revenue) {
+                revenue.textContent = "₹" + Number(selected.revenue || 0);
+            }
+
+            if (split) {
+                split.textContent =
+                    "₹" + Number(selected.onlineRevenue || 0) +
+                    " / ₹" + Number(selected.codRevenue || 0);
+            }
+
+            const months = Array.isArray(result.months) ? result.months : [];
+            const maxRevenue = Math.max.apply(
+                null,
+                months.map(function (item) {
+                    return Number(item.revenue || 0);
+                }).concat([1])
+            );
+
+            if (bars) {
+                bars.innerHTML = months.map(function (item) {
+                    const width = Math.max(
+                        6,
+                        Math.round((Number(item.revenue || 0) / maxRevenue) * 100)
+                    );
+
+                    return `
+                        <div class="revenue-bar-row">
+                            <span>${escapeHTML(item.label)}</span>
+                            <div class="revenue-bar-track">
+                                <div class="revenue-bar-fill" style="width:${width}%"></div>
+                            </div>
+                            <strong>₹${Number(item.revenue || 0)}</strong>
+                        </div>
+                    `;
+                }).join("");
+            }
+
+            const reportOrders = Array.isArray(result.orders) ? result.orders : [];
+
+            if (tableBody) {
+                if (!reportOrders.length) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="empty-cell">
+                                No orders in this month.
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tableBody.innerHTML = reportOrders.map(function (order) {
+                        const paymentRaw = String(order.payment_method || "");
+                        const payment = paymentRaw === "cod" || paymentRaw.indexOf("cod") === 0
+                            ? "Cash on Delivery"
+                            : "Online Payment";
+
+                        return `
+                            <tr>
+                                <td><strong>${escapeHTML(order.order_id || "—")}</strong></td>
+                                <td>${escapeHTML(formatOrderDateTime(order))}</td>
+                                <td>${escapeHTML(order.customer_name || "—")}</td>
+                                <td>${escapeHTML(payment)}</td>
+                                <td>₹${Number(order.total || 0).toFixed(0)}</td>
+                                <td>${escapeHTML(order.status || "—")}</td>
+                            </tr>
+                        `;
+                    }).join("");
+                }
+            }
+
+        } catch (error) {
+            console.error("MONTHLY REPORT ERROR:", error);
+
+            const tableBody = document.getElementById("report-orders-body");
+
+            if (tableBody) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-cell">
+                            Unable to load monthly report.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+    }
+
+    function attachStockAndReportEvents() {
+        const refreshStock = document.getElementById("refresh-stock");
+        const refreshReport = document.getElementById("refresh-report");
+
+        if (refreshStock) {
+            refreshStock.addEventListener("click", function () {
+                loadStockBoard();
+            });
+        }
+
+        if (refreshReport) {
+            refreshReport.addEventListener("click", function () {
+                loadMonthlyReport();
+            });
+        }
+    }
+
+
+    /* =========================================================
        INITIALIZE
     ========================================================= */
 
@@ -2296,8 +2714,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     attachAddProductButton();
 
+    attachStockAndReportEvents();
+
     loadOrders();
 
-    loadProducts();
+    loadProducts().then(function () {
+        loadStockBoard();
+    });
+
+    loadMonthlyReport();
 
 });

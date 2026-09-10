@@ -1,17 +1,33 @@
-const SUPABASE_URL = "https://oobdmxipmztbsbhtlggt.supabase.co";
+const DEFAULT_SUPABASE_URL = "https://oobdmxipmztbsbhtlggt.supabase.co";
 
-const SUPABASE_ANON_KEY =
+const DEFAULT_SUPABASE_ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vYmRteGlwbXp0YnNiaHRsZ2d0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjM2NzQsImV4cCI6MjEwMjc5OTY3NH0.vw1d1BTfkaj_RvsHo0hj5L7w308m4H9iX8FKUX6MILI";
 
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
+async function createAdminSupabaseClient() {
+    let supabaseUrl = DEFAULT_SUPABASE_URL;
+    let supabaseAnonKey = DEFAULT_SUPABASE_ANON_KEY;
+
+    try {
+        const response = await fetch("/api/config");
+        const config = await response.json();
+
+        if (config.supabaseUrl && config.supabaseAnonKey) {
+            supabaseUrl = config.supabaseUrl;
+            supabaseAnonKey = config.supabaseAnonKey;
+        }
+    } catch (error) {
+        console.warn("Using fallback admin auth config:", error);
+    }
+
+    return window.supabase.createClient(
+        supabaseUrl,
+        supabaseAnonKey
     );
+}
 
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const loginForm = document.getElementById("admin-login-form");
     const emailInput = document.getElementById("admin-email");
     const passwordInput = document.getElementById("admin-password");
@@ -21,6 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Admin login form was not found.");
         return;
     }
+
+    const supabaseClient = await createAdminSupabaseClient();
 
     loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();

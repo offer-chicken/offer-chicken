@@ -7,15 +7,13 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Order Confirmed - Meat Shop</title>
+    <title>Order Confirmed - The Offer Meat Shop</title>
 
     <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
-
-    <!-- TOP BAR -->
 
     <div class="top-bar">
 
@@ -24,7 +22,7 @@
             <span>⌖</span>
 
             <span>
-                Delivering to: Madurai, Tamil Nadu
+                Delivering to: SUNGUVARCHATHIRAM, Tamil Nadu
             </span>
 
         </div>
@@ -33,11 +31,11 @@
         <div class="top-right">
 
             <span>
-                ☎ +91 98765 43210
+                ☎ +91 7558148537
             </span>
 
             <span>
-                ✉ support@meatshop.com
+                ✉ theofferchicken@gmail.com
             </span>
 
         </div>
@@ -45,8 +43,6 @@
     </div>
 
 
-
-    <!-- HEADER -->
 
     <header class="main-header">
 
@@ -60,7 +56,7 @@
             <div class="logo-text">
 
                 <h1>
-                    MEAT SHOP
+                    THE OFFER MEAT SHOP
                 </h1>
 
                 <p>
@@ -74,8 +70,6 @@
     </header>
 
 
-
-    <!-- ORDER SUCCESS -->
 
     <main class="success-page">
 
@@ -160,6 +154,12 @@
             </div>
 
 
+            <div
+                id="success-items"
+                class="success-items"
+            ></div>
+
+
 
             <div class="delivery-message">
 
@@ -188,15 +188,15 @@
                     type="button"
                     onclick="window.location.href='index.html'"
                 >
-                    🛒 Continue Shopping
+                    Continue Shopping
                 </button>
 
                 <button
                     type="button"
                     class="secondary-button"
-                    onclick="window.print()"
+                    id="whatsapp-order-button"
                 >
-                    🖨 Print Order
+                    Send on WhatsApp
                 </button>
 
             </div>
@@ -208,12 +208,10 @@
 
 
 
-    <!-- FOOTER -->
-
     <footer>
 
         <p>
-            © 2026 Meat Shop. Fresh & Hygienic.
+            © 2026 The Offer Meat Shop. Fresh & Hygienic.
         </p>
 
     </footer>
@@ -226,6 +224,7 @@
             "DOMContentLoaded",
             function () {
 
+                const WHATSAPP_NUMBER = "917558148537";
 
                 const order =
                     JSON.parse(
@@ -256,7 +255,9 @@
                 document.getElementById(
                     "success-customer"
                 ).textContent =
-                    order.customer.name;
+                    order.customer && order.customer.name
+                        ? order.customer.name
+                        : "—";
 
 
                 document.getElementById(
@@ -265,12 +266,60 @@
                     "₹" + order.total;
 
 
+                const paymentMethod =
+                    String(order.paymentMethod || "");
+
                 document.getElementById(
                     "success-payment"
                 ).textContent =
-                    order.paymentMethod === "cod"
+                    paymentMethod === "cod" ||
+                    paymentMethod.indexOf("cod") === 0
                         ? "Cash on Delivery"
                         : "Online Payment";
+
+
+                const itemsBox =
+                    document.getElementById("success-items");
+
+                if (itemsBox && Array.isArray(order.items)) {
+
+                    itemsBox.innerHTML = order.items.map(function (item) {
+                        return (
+                            "<div>" +
+                            (item.name || "Item") +
+                            " (" + (item.weight || "") + ") × " +
+                            (item.quantity || 1) +
+                            "</div>"
+                        );
+                    }).join("");
+
+                }
+
+
+                const whatsappButton =
+                    document.getElementById("whatsapp-order-button");
+
+                const storedMessage =
+                    localStorage.getItem("meatShopWhatsappMessage");
+
+                if (whatsappButton) {
+
+                    whatsappButton.addEventListener("click", function () {
+                        const message = storedMessage || (
+                            "THE OFFER MEAT SHOP order " +
+                            order.orderNumber
+                        );
+
+                        window.open(
+                            "https://wa.me/" +
+                            WHATSAPP_NUMBER +
+                            "?text=" +
+                            encodeURIComponent(message),
+                            "_blank"
+                        );
+                    });
+
+                }
 
             }
         );

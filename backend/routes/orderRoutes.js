@@ -1,5 +1,7 @@
 const express = require("express");
 const supabase = require("../config/supabase");
+const { saveShopOrder } = require("../utils/orders");
+const { mergeOrders, updateLocalOrderStatus } = require("../utils/localStore");
 
 const router = express.Router();
 
@@ -15,179 +17,14 @@ router.post("/", async (req, res) => {
 
         const order = req.body;
 
-
-        if (!order) {
-
-            return res.status(400).json({
-                success: false,
-                message: "Order data is required"
-            });
-
-        }
-
-
-        if (
-            !order.customer ||
-            !Array.isArray(order.items) ||
-            order.items.length === 0
-        ) {
-
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Customer details and cart items are required"
-            });
-
-        }
-
-
-        if (
-            !order.customer.name ||
-            !order.customer.phone ||
-            !order.customer.address ||
-            !order.customer.city ||
-            !order.customer.pincode
-        ) {
-
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Complete customer details are required"
-            });
-
-        }
-
-
-        const orderId =
-            "MS-" + Date.now();
-
-
-        const orderRow = {
-
-            order_id: orderId,
-
-            customer_name:
-                order.customer.name,
-
-            customer_phone:
-                order.customer.phone,
-
-            customer_address:
-                order.customer.address,
-
-            customer_city:
-                order.customer.city,
-
-            customer_pincode:
-                order.customer.pincode,
-
-            payment_method:
-                order.paymentMethod || "cod",
-
-            items:
-                order.items,
-
-            subtotal:
-                Number(order.subtotal || 0),
-
-            delivery:
-                Number(order.delivery || 0),
-
-            total:
-                Number(order.total || 0),
-
-            status:
-                "Order Placed"
-
-        };
-
-
-        const {
-            data,
-            error
-        } = await supabase
-            .from("orders")
-            .insert([orderRow])
-            .select()
-            .single();
-
-
-        if (error) {
-
-            console.error(
-                "Supabase Order Error:",
-                error
-            );
-
-            return res.status(500).json({
-                success: false,
-                message:
-                    "Unable to save order to database"
-            });
-
-        }
-
-
-        console.log(
-            "Order saved to Supabase:",
-            data.order_id
-        );
-
+        const savedOrder = await saveShopOrder(order, {
+            paymentStatus: order.paymentMethod === "online" ? "paid" : "cod"
+        });
 
         res.status(201).json({
-
             success: true,
-
-            message:
-                "Order saved successfully",
-
-            order: {
-
-                orderId:
-                    data.order_id,
-
-                customer: {
-
-                    name:
-                        data.customer_name,
-
-                    phone:
-                        data.customer_phone,
-
-                    address:
-                        data.customer_address,
-
-                    city:
-                        data.customer_city,
-
-                    pincode:
-                        data.customer_pincode
-
-                },
-
-                paymentMethod:
-                    data.payment_method,
-
-                items:
-                    data.items,
-
-                subtotal:
-                    Number(data.subtotal),
-
-                delivery:
-                    Number(data.delivery),
-
-                total:
-                    Number(data.total),
-
-                status:
-                    data.status,
-
-                createdAt:
-                    data.created_at
-
-            }
-
+            message: "Order saved successfully",
+            order: savedOrder
         });
 
     } catch (error) {
@@ -197,16 +34,14 @@ router.post("/", async (req, res) => {
             error
         );
 
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             success: false,
-            message:
-                "Internal server error"
+            message: error.message || "Internal server error"
         });
 
     }
 
 });
-
 
 
 /* =========================
@@ -236,10 +71,9 @@ router.get("/", async (req, res) => {
                 error
             );
 
-            return res.status(500).json({
-                success: false,
-                message:
-                    "Unable to fetch orders"
+            return res.json({
+                success: true,
+                orders: mergeOrders([])
             });
 
         }
@@ -249,8 +83,7 @@ router.get("/", async (req, res) => {
 
             success: true,
 
-            orders:
-                data || []
+            orders: mergeOrders(data || [])
 
         });
 
@@ -329,6 +162,16 @@ router.put("/:id/status", async (req, res) => {
                 error
             );
 
+            const localOrder = updateLocalOrderStatus(orderId, status);
+
+            if (localOrder) {
+                return res.json({
+                    success: true,
+                    message: "Order status updated successfully",
+                    order: localOrder
+                });
+            }
+
             return res.status(500).json({
                 success: false,
                 message:
@@ -338,16 +181,27 @@ router.put("/:id/status", async (req, res) => {
         }
 
 
+        if (!data) {
+            const localOrder = updateLocalOrderStatus(orderId, status);
+
+            if (localOrder) {
+                return res.json({
+                    success: true,
+                    message: "Order status updated successfully",
+                    order: localOrder
+                });
+            }
+
+            return res.status(404).json({
+                success: false,
+                message: "Order not found"
+            });
+        }
+
         res.json({
-
             success: true,
-
-            message:
-                "Order status updated successfully",
-
-            order:
-                data
-
+            message: "Order status updated successfully",
+            order: data
         });
 
     } catch (error) {

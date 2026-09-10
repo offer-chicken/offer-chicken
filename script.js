@@ -8,8 +8,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     // CART DATA
     // =========================================================
 
-    let cart =
-        JSON.parse(localStorage.getItem("meatShopCart")) || [];
+    let cart = [];
+
+    try {
+        cart = JSON.parse(localStorage.getItem("meatShopCart")) || [];
+
+        if (!Array.isArray(cart)) {
+            cart = [];
+        }
+    } catch (error) {
+        console.error("Cart parse error:", error);
+        cart = [];
+    }
 
 
     // =========================================================
@@ -258,17 +268,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     // SET BUTTONS TO LOADING
     // =========================================================
 
-    document
-        .querySelectorAll(".add-cart")
-        .forEach(function (button) {
-
-            button.disabled = true;
-            button.textContent = "Loading...";
-            button.style.opacity = "0.65";
-
-        });
-
-
     // =========================================================
     // LOAD PRODUCTS FROM BACKEND
     // =========================================================
@@ -345,8 +344,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 .querySelectorAll(".add-cart")
                 .forEach(function (button) {
 
-                    button.disabled = true;
-                    button.textContent = "Try Again";
+                    button.disabled = false;
+                    button.textContent = "Add to Cart";
                     button.style.opacity = "1";
 
                 });
@@ -383,17 +382,15 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (!product) {
 
                 console.warn(
-                    "Could not match HTML product:",
+                    "Using HTML catalog for:",
                     htmlName
                 );
 
-
                 if (addButton) {
-
-                    addButton.disabled = true;
-                    addButton.textContent = "Product Error";
-                    addButton.style.opacity = "0.75";
-
+                    addButton.disabled = false;
+                    addButton.textContent = "Add to Cart";
+                    addButton.style.opacity = "1";
+                    addButton.dataset.locked = "false";
                 }
 
                 return;
@@ -529,12 +526,25 @@ document.addEventListener("DOMContentLoaded", async function () {
                     addButton.disabled = true;
                     addButton.textContent = "Unavailable";
                     addButton.style.opacity = "0.65";
+                    addButton.dataset.locked = "true";
+
+                } else if (
+                    product.stock !== null &&
+                    product.stock !== undefined &&
+                    Number(product.stock) <= 0
+                ) {
+
+                    addButton.disabled = true;
+                    addButton.textContent = "Out of Stock";
+                    addButton.style.opacity = "0.65";
+                    addButton.dataset.locked = "true";
 
                 } else {
 
                     addButton.disabled = false;
-                    addButton.textContent = "🛒 Add to Cart";
+                    addButton.textContent = "Add to Cart";
                     addButton.style.opacity = "1";
+                    addButton.dataset.locked = "false";
 
                 }
 
@@ -1417,18 +1427,27 @@ document.addEventListener("DOMContentLoaded", async function () {
                     findDatabaseProduct(card);
 
 
-                if (!databaseProduct) {
+                const nameElement =
+                    card.querySelector(".dynamic-product-name") ||
+                    card.querySelector("h3");
 
-                    alert(
-                        "Product information is still loading. Please try again."
-                    );
+                const priceElement =
+                    card.querySelector(".dynamic-product-price") ||
+                    card.querySelector(".price");
 
-                    return;
+                const name =
+                    (databaseProduct && databaseProduct.name) ||
+                    (nameElement ? nameElement.textContent.trim() : "") ||
+                    card.getAttribute("data-product") ||
+                    "Product";
 
-                }
+                const price = databaseProduct
+                    ? Number(databaseProduct.price) || 0
+                    : Number(String(priceElement ? priceElement.textContent : "0").replace(/[^0-9.]/g, "")) || 0;
 
 
                 if (
+                    databaseProduct &&
                     databaseProduct.available === false
                 ) {
 
@@ -1440,13 +1459,20 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                 }
 
+                if (
+                    databaseProduct &&
+                    databaseProduct.stock !== null &&
+                    databaseProduct.stock !== undefined &&
+                    Number(databaseProduct.stock) <= 0
+                ) {
 
-                const name =
-                    databaseProduct.name;
+                    alert(
+                        "This product is currently out of stock."
+                    );
 
+                    return;
 
-                const price =
-                    Number(databaseProduct.price) || 0;
+                }
 
 
                 const quantityElement =
@@ -1495,7 +1521,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const image =
                     imageElement
                         ? imageElement.src
-                        : databaseProduct.image;
+                        : (databaseProduct && databaseProduct.image) || "";
 
 
                 const existing =
@@ -1525,7 +1551,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                     cart.push({
 
                         id:
-                            databaseProduct.id,
+                            databaseProduct
+                                ? databaseProduct.id
+                                : card.dataset.productId || name,
 
                         name:
                             name,

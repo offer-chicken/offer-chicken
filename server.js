@@ -6,6 +6,8 @@ const cors = require("cors");
 
 const orderRoutes = require("./backend/routes/orderRoutes");
 const productRoutes = require("./backend/routes/productRoutes");
+const paymentRoutes = require("./backend/routes/paymentRoutes");
+const reportRoutes = require("./backend/routes/reportRoutes");
 
 const app = express();
 const rootDir = __dirname;
@@ -31,8 +33,18 @@ app.get("/admin-login", (req, res) => {
     res.sendFile(path.join(rootDir, "admin-login.html"));
 });
 
+app.get("/checkout", (req, res) => {
+    res.sendFile(path.join(rootDir, "checkout.html"));
+});
+
+app.get("/order-success", (req, res) => {
+    res.sendFile(path.join(rootDir, "order-success.html"));
+});
+
 app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api", paymentRoutes);
 
 if (require.main === module) {
     app.listen(PORT, () => {

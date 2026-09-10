@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>offer chicken - wholesale & retail</title>
+    <title>The Offer Meat Shop - wholesale & retail</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -45,11 +45,11 @@
         <div class="logo-area">
 
             <div class="logo-icon">
-    <img src="images/logo.png" alt="The Offer Chicken Logo">
+    <img src="images/logo.png" alt="The Offer Meat Shop Logo">
 </div>
 
             <div class="logo-text">
-                <h1>OFFER CHICKEN</h1>
+                <h1>THE OFFER MEAT SHOP</h1>
                 <p>WHOLESALE & RETAIL</p>
             </div>
 
@@ -1313,7 +1313,7 @@
     <footer>
 
         <p>
-            © 2026 offer chicken. wholesale & retail.
+            © 2026 The Offer Meat Shop. wholesale & retail.
         </p>
 
     </footer>
@@ -1357,6 +1357,14 @@
                         Array.isArray(result.products)
                             ? result.products
                             : [];
+
+
+                    if (products.length === 0) {
+                        console.warn(
+                            "No products from API. Using the page catalog."
+                        );
+                        return;
+                    }
 
 
                     const cards =
@@ -1544,6 +1552,25 @@
 
                                 addButton.textContent =
                                     "Unavailable";
+
+                                addButton.style.opacity =
+                                    "0.65";
+
+                            }
+
+                        } else if (
+                            product.stock !== null &&
+                            product.stock !== undefined &&
+                            Number(product.stock) <= 0
+                        ) {
+
+                            if (addButton) {
+
+                                addButton.disabled =
+                                    true;
+
+                                addButton.textContent =
+                                    "Out of Stock";
 
                                 addButton.style.opacity =
                                     "0.65";

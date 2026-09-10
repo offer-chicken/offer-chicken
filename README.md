@@ -1,6 +1,6 @@
-# Offer Chicken Meat Delivery
+# The Offer Meat Shop
 
-A small meat delivery storefront with a frontend, checkout flow, and Express backend that stores orders/products in Supabase.
+A small meat delivery storefront with a frontend, checkout flow, Razorpay Standard Checkout, and an Express backend that stores orders/products in Supabase.
 
 ## Project structure
 
@@ -46,6 +46,8 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 MEATSHOP_SUPABASE_URL=https://your-project.supabase.co
 MEATSHOP_SUPABASE_ANON_KEY=your-anon-key
+RAZORPAY_KEY_ID=rzp_test_your_key_id
+RAZORPAY_KEY_SECRET=your_key_secret
 ```
 
 ## Notes
