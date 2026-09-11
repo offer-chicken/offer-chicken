@@ -20,7 +20,7 @@
 
 
         <div class="admin-logo-icon login-logo">
-            🍖
+            MS
         </div>
 
 
@@ -32,6 +32,27 @@
         <p class="login-subtitle">
             Owner / Admin Login
         </p>
+
+
+        <div class="account-tabs login-tabs">
+
+            <button
+                type="button"
+                class="account-tab active"
+                id="admin-tab-password"
+            >
+                Password
+            </button>
+
+            <button
+                type="button"
+                class="account-tab"
+                id="admin-tab-otp"
+            >
+                Login with OTP
+            </button>
+
+        </div>
 
 
 
@@ -55,7 +76,7 @@
 
 
 
-            <div class="login-field">
+            <div class="login-field" id="admin-password-field">
 
                 <label for="admin-password">
                     Password
@@ -65,7 +86,39 @@
                     type="password"
                     id="admin-password"
                     placeholder="Enter password"
-                    required
+                >
+
+            </div>
+
+
+
+            <div class="login-field" id="admin-otp-field" style="display:none;">
+
+                <label for="admin-otp">
+                    OTP
+                </label>
+
+                <input
+                    type="text"
+                    id="admin-otp"
+                    maxlength="6"
+                    placeholder="6-digit OTP"
+                >
+
+            </div>
+
+
+
+            <div class="login-field" id="admin-new-password-field" style="display:none;">
+
+                <label for="admin-new-password">
+                    Set / reset password
+                </label>
+
+                <input
+                    type="password"
+                    id="admin-new-password"
+                    placeholder="At least 6 characters"
                 >
 
             </div>
@@ -75,8 +128,29 @@
             <button
                 type="submit"
                 class="login-button"
+                id="admin-submit-button"
             >
                 Login
+            </button>
+
+
+            <button
+                type="button"
+                class="login-button"
+                id="admin-send-otp-button"
+                style="display:none; margin-top:10px; background:#333;"
+            >
+                Send OTP
+            </button>
+
+
+            <button
+                type="button"
+                class="login-button"
+                id="admin-save-password-button"
+                style="display:none; margin-top:10px; background:#198754;"
+            >
+                Save password
             </button>
 
 
@@ -97,11 +171,7 @@
 
 
 
-    <!-- SUPABASE -->
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- ADMIN LOGIN -->
 
     <script src="/admin-login.js"></script>
 

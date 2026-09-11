@@ -588,7 +588,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 <td class="order-total">
 
                     <strong>
-                        ₹${Number(
+                        Rs ${Number(
                             order.total || 0
                         ).toFixed(0)}
                     </strong>
@@ -750,7 +750,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (totalRevenue) {
 
             totalRevenue.textContent =
-                "₹" +
+                "Rs " +
                 revenue.toFixed(0);
 
         }
@@ -908,11 +908,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                     </strong>
 
                     <span>
-                        📞 ${escapeHTML(phone)}
+                        Phone: ${escapeHTML(phone)}
                     </span>
 
                     <span>
-                        📍 ${escapeHTML(location)}
+                        Address: ${escapeHTML(location)}
                     </span>
 
                 `;
@@ -1233,7 +1233,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                             border-radius:10px;
                             margin-bottom:12px;
                         ">
-                            🍖
+                            Meat
                         </div>
 
                     `;
@@ -1263,7 +1263,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
                     <span>
-                        ₹${Number(
+                        Rs ${Number(
                             product.price || 0
                         ).toFixed(0)}
                     </span>
@@ -1304,7 +1304,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                                 cursor:pointer;
                             "
                         >
-                            ✏️ Edit Product
+                            Edit Product
                         </button>
 
 
@@ -1316,7 +1316,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                                 cursor:pointer;
                             "
                         >
-                            🗑️
+                            Delete
                         </button>
 
                     </div>
@@ -2601,13 +2601,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             if (revenue) {
-                revenue.textContent = "₹" + Number(selected.revenue || 0);
+                revenue.textContent = "Rs " + Number(selected.revenue || 0);
             }
 
             if (split) {
                 split.textContent =
-                    "₹" + Number(selected.onlineRevenue || 0) +
-                    " / ₹" + Number(selected.codRevenue || 0);
+                    "Rs " + Number(selected.onlineRevenue || 0) +
+                    " / Rs " + Number(selected.codRevenue || 0);
             }
 
             const months = Array.isArray(result.months) ? result.months : [];
@@ -2631,7 +2631,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                             <div class="revenue-bar-track">
                                 <div class="revenue-bar-fill" style="width:${width}%"></div>
                             </div>
-                            <strong>₹${Number(item.revenue || 0)}</strong>
+                            <strong>Rs ${Number(item.revenue || 0)}</strong>
                         </div>
                     `;
                 }).join("");
@@ -2661,7 +2661,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                                 <td>${escapeHTML(formatOrderDateTime(order))}</td>
                                 <td>${escapeHTML(order.customer_name || "—")}</td>
                                 <td>${escapeHTML(payment)}</td>
-                                <td>₹${Number(order.total || 0).toFixed(0)}</td>
+                                <td>Rs ${Number(order.total || 0).toFixed(0)}</td>
                                 <td>${escapeHTML(order.status || "—")}</td>
                             </tr>
                         `;

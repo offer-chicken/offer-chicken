@@ -8,6 +8,7 @@ const orderRoutes = require("./backend/routes/orderRoutes");
 const productRoutes = require("./backend/routes/productRoutes");
 const paymentRoutes = require("./backend/routes/paymentRoutes");
 const reportRoutes = require("./backend/routes/reportRoutes");
+const authRoutes = require("./backend/routes/authRoutes");
 
 const app = express();
 const rootDir = __dirname;
@@ -44,6 +45,7 @@ app.get("/order-success", (req, res) => {
 app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api", paymentRoutes);
 
 if (require.main === module) {

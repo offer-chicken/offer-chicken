@@ -38,6 +38,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const placeOrderButton =
         document.getElementById("place-order");
 
+    const savedCustomer = (function () {
+        try {
+            return JSON.parse(localStorage.getItem("meatShopCustomer") || "null");
+        } catch (error) {
+            return null;
+        }
+    })();
+
+    if (savedCustomer) {
+        const nameInput = document.getElementById("customer-name");
+        const phoneInput = document.getElementById("customer-phone");
+
+        if (nameInput && savedCustomer.name && !nameInput.value) {
+            nameInput.value = savedCustomer.name;
+        }
+
+        if (phoneInput && savedCustomer.phone && !phoneInput.value) {
+            phoneInput.value = savedCustomer.phone;
+        }
+    }
+
     let subtotal = 0;
     let razorpayKeyId = "";
 

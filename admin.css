@@ -821,3 +821,27 @@ td {
     }
 
 }
+
+.login-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.login-tabs .account-tab {
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    color: #444;
+}
+
+.login-tabs .account-tab.active {
+    background: #c91418;
+    border-color: #c91418;
+    color: #fff;
+}
